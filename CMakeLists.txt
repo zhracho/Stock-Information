@@ -10,4 +10,6 @@ add_executable(Stock_Information
         src/MaxHeap.h
         src/MaxHeap.cpp
         src/Stock.cpp
-        src/Stock.h)
+        src/Stock.h
+        src/RedBlack.cpp
+        src/RedBlack.h)

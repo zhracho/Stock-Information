@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include "MaxHeap.h"
+#include "RedBlack.h"
 
 using namespace std;
 
@@ -36,9 +37,24 @@ int main() {
     while(!exit){
 
         MaxHeap stockHeap;
+        RedBlack stockTree;
+
+        Stock stock = Stock("AAPL", "1/1/2024", 200.5, 2900);
 
         // Insert stock data
-        stockHeap.insert("AAPL", "1/1/2024", 200.5, 2900);
+        stockTree.insert(stock);
+
+        stock = Stock("AAPL", "1/2/2024", 400.5, 2900);
+        stockTree.insert(stock);
+        stock = Stock("AAPL", "1/3/2024", 100.5, 2900);
+        stockTree.insert(stock);
+
+        stock = Stock("AAPL", "1/3/2024", 500.5, 2900);
+        stockTree.insert(stock);
+
+        stock = Stock("AAPL", "1/3/2024", 700, 2900);
+        stockTree.insert(stock);
+
 
 
 
