@@ -50,6 +50,7 @@ private:
     Node* rotateLeftRight(Node* node);
     Node* rotateRightLeft(Node* node);
     int updateHeight(Node* node);
+    Node* balanceHelper(Node* node, Stock stonk);
 public:
     void insert(Stock stonk);
 

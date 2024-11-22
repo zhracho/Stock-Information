@@ -12,4 +12,6 @@ add_executable(Stock_Information
         src/Stock.cpp
         src/Stock.h
         src/RedBlack.cpp
-        src/RedBlack.h)
+        src/RedBlack.h
+        src/HashTable.cpp
+        src/HashTable.h)

@@ -1,10 +1,13 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <sstream>
 #include <vector>
+#include <chrono>
 #include "MaxHeap.h"
-#include "RedBlack.h"
-
+#include "HashTable.h"
+#include <iomanip>
+using namespace std::chrono;
 using namespace std;
 
 void userInterface(){
@@ -12,15 +15,16 @@ void userInterface(){
             "                   WELCOME TO MARKET MATRIX                  \n"
             "=============================================================\n"
             "         Get ready to explore performance between:\n"
-            "                SPLAY TREE vs. MAX HEAP\n"
+            "                HASH TABLE vs. MAX HEAP\n"
             "-------------------------------------------------------------\n" << endl;
 
 }
 
+
 int userChoice(){
     cout << "How would you like to store the data?" << endl;
     cout << "1: Max Heap" << endl;
-    cout << "2: Red Black Tree" << endl;
+    cout << "2: Hash Table" << endl;
 
     int dataStructure;
     cin >> dataStructure;
@@ -32,34 +36,38 @@ int userChoice(){
 
 int main() {
     userInterface();
+
     bool exit = false;
 
     while(!exit){
 
         MaxHeap stockHeap;
-        RedBlack stockTree;
+        HashTable stockTable = HashTable(500);
 
-        Stock stock = Stock("AAPL", "1/1/2024", 200.5, 2900);
-
-        // Insert stock data
-        stockTree.insert(stock);
-
-        stock = Stock("AAPL", "1/2/2024", 400.5, 2900);
-        stockTree.insert(stock);
-        stock = Stock("AAPL", "1/3/2024", 100.5, 2900);
-        stockTree.insert(stock);
-
-        stock = Stock("AAPL", "1/3/2024", 500.5, 2900);
-        stockTree.insert(stock);
-
-        stock = Stock("AAPL", "1/3/2024", 700, 2900);
-        stockTree.insert(stock);
+        std::string filename = "proj3_sp500_stocks.csv"; // Replace with your CSV file name
+        std::ifstream file(filename);
 
 
+        string line;
+        getline(file, line);
+        while (getline(file, line)) {
+            // Process each line (row) of the CSV file here
+            stringstream ss(line);
+            string value;
+            vector<string> row;
+            while(getline(ss, value, ',')){
+                row.push_back(value);
+            }
 
+            stockHeap.insert(Stock(row[0], row[1], stoi(row[2]), stod(row[3])));
+            stockTable.insert(Stock(row[0], row[1], stoi(row[2]), stod(row[3])));
+
+        }
+
+        file.close();
 
         cout << "Menu Options:" << endl;
-        cout << "1: Top 10 Stocks Total" << endl;
+        cout << "1: Top X Stocks Total" << endl;
         cout << "2: Print Stock Information" << endl;
         cout << "3: Top X Prices by Company" << endl;
         cout << "4: Get Maximum Price" << endl;
@@ -72,25 +80,78 @@ int main() {
 
         if(userInput == 1){
             dataStructure = userChoice();
+            int num;
+            cout << "Please Enter the Number of Stocks: ";
+            cin >> num;
+            cout << endl;
+
+            if(dataStructure == 1){
+                auto start = high_resolution_clock::now();
+                stockHeap.topN(num);
+                auto stop = high_resolution_clock::now();
+                auto duration = duration_cast<microseconds>(stop - start);
+                cout << "Time taken by function: "
+                     << duration.count() << " microseconds" << endl;
+            }else if(dataStructure == 2){
+                auto start = high_resolution_clock::now();
+                stockTable.topStocks(num);
+                auto stop = high_resolution_clock::now();
+                auto duration = duration_cast<microseconds>(stop - start);
+                cout << "Time taken by function: "
+                     << duration.count() << " microseconds" << endl;
+            }else{
+                cout << "Wrong Input Please Try Again" << endl;
+            }
+
+
         }else if(userInput == 2){
             dataStructure = userChoice();
+
         }else if(userInput == 3){
             dataStructure = userChoice();
+            string company;
+            cout << "Please Enter the Company Name: ";
+            cin >> company;
+            int num;
+            cout << "Please Enter the Number of Stocks: ";
+            cin >> num;
+            cout << endl;
             if(dataStructure == 1){
-                cout << "Please Enter the Company Name: ";
-                string company;
-                cin >> company;
-                cout << "Please Enter the Number of Stocks: ";
-                int num;
-                cin >> num;
-                cout << endl;
+
+                auto start = high_resolution_clock::now();
                 stockHeap.searchCompany(num, company);
+                auto stop = high_resolution_clock::now();
+                auto duration = duration_cast<microseconds>(stop - start);
+                cout << "Time taken by function: "
+                     << duration.count() << " microseconds" << endl;
+
+            }else if(dataStructure == 2){
+
+                auto start = high_resolution_clock::now();
+                stockTable.topNByCompany(company, num, true);
+                auto stop = high_resolution_clock::now();
+                auto duration = duration_cast<microseconds>(stop - start);
+                cout << "Time taken by function: "
+                     << duration.count() << " microseconds" << endl;
 
             }
         }else if(userInput == 4){
             dataStructure = userChoice();
             if(dataStructure == 1){
+                auto start = high_resolution_clock::now();
                 stockHeap.printMax();
+                auto stop = high_resolution_clock::now();
+                auto duration = duration_cast<microseconds>(stop - start);
+                cout << "Time taken by function: "
+                     << duration.count() << " microseconds" << endl;
+
+            }else{
+                auto start = high_resolution_clock::now();
+                stockTable.maxStock();
+                auto stop = high_resolution_clock::now();
+                auto duration = duration_cast<microseconds>(stop - start);
+                cout << "Time taken by function: "
+                     << duration.count() << " microseconds" << endl;
             }
         }else if(userInput == 5){
             dataStructure = userChoice();
@@ -109,23 +170,6 @@ int main() {
         cout << endl;
 
     }
-
-//    std::string filename = "proj3_sp500_stocks.csv"; // Replace with your CSV file name
-//    std::ifstream file(filename);
-//
-//
-//    std::string line;
-//    std::vector<std::string> row;
-//    while (std::getline(file, line)) {
-//        // Process each line (row) of the CSV file here
-//        std::cout << line << std::endl;
-//    }
-//
-//    file.close();
-
-
-
-
 
     return 0;
 

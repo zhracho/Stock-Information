@@ -9,7 +9,8 @@ private:
     void heapifyDown(vector<Stock>& vec, int index);
 
 public:
-    void insert(string stockName, string date, double adjClose, int totalVolume);
+    void insert(Stock stonk);
+    void topN(int n);
     void printHeap();
     Stock maxElement();
     void printMax();
@@ -19,5 +20,7 @@ public:
     int getYear(const string& dateParse);
     int getMonth(const string& dateParse);
     int getDate(const string& dateParse);
+    void printHeader();
+    void printTable(const Stock& stonk);
 };
 

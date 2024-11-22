@@ -1,11 +1,13 @@
 #include "MaxHeap.h"
 #include <iostream>
+#include <iomanip>
+#include <ctime>
+
 using namespace std;
 
-void MaxHeap::insert(string stockName, string date, double adjClose, int totalVolume) {
-    Stock stock = Stock(stockName, date, adjClose, totalVolume);
+void MaxHeap::insert(Stock stonk) {
 
-    heap.push_back(stock);
+    heap.push_back(stonk);
     int child = heap.size() - 1;
     int parent = (child - 1)/2;
 
@@ -79,20 +81,26 @@ void MaxHeap::searchCompany(int x, const string& stockName) {
 
     int count = 0;
 
+    string stockNameLower;
+
+    for(int i = 0; i < stockName.length(); i++){
+        stockNameLower += (char)toupper(stockName[i]);
+    }
+
     for(unsigned int i = 0; i < heap.size(); i ++){
         if(count == x)
             break;
 
         Stock search = copy.extractMax();
-        if(search.stockName == stockName){
+        if(search.stockName == stockNameLower){
             ans.push_back(search);
             count++;
         }
     }
 
+    printHeader();
     for(auto & i : ans){
-        cout <<"Date: " << i.date << " Company: " << i.stockName << " Adj. Close: " <<
-        i.adjClose << " Volume: " << i.totalVolume<< endl;
+        printTable(i);
     }
 
 }
@@ -100,8 +108,9 @@ void MaxHeap::searchCompany(int x, const string& stockName) {
 void MaxHeap::printMax() {
     Stock maxPrice = maxElement();
 
-    cout <<"Date: " << maxPrice.date << " Company: " << maxPrice.stockName <<
-    " Adj. Close: " << maxPrice.adjClose << " Volume: " << maxPrice.totalVolume<< endl;
+
+    printHeader();
+    printTable(maxPrice);
 
 }
 
@@ -134,25 +143,79 @@ void MaxHeap::searchDate(const string& startDate) {
     copy.heap = heap;
     vector<Stock> ans;
 
+    tm date1 = {};
+
+
     int startDay = getDate(startDate);
     int startMonth = getMonth(startDate);
     int startYear = getYear(startDate);
 
+    date1.tm_year = startYear - 1900;
+    date1.tm_mon = startMonth- 1;
+    date1.tm_mday = startDay;
 
+    time_t timestamp1 = mktime(&date1);
+    time_t timestamp2;
 
     for(unsigned int i = 0; i < heap.size(); i ++){
 
         Stock search = copy.extractMax();
-        if(getDate(search.date) >= startDay &&
-        getYear(search.date) >=  startYear && getMonth(search.date) >= startMonth){
+        tm date2 = {};
+
+        int stockDate = getDate(search.date);
+        int stockYear = getYear(search.date) - 1900;
+        int stockMonth = getMonth(search.date) - 1;
+
+        date2.tm_year = stockYear;
+        date2.tm_mon = stockMonth;
+        date2.tm_mday = stockDate;
+
+        timestamp2 = mktime(&date2);
+
+        if(timestamp1 < timestamp2){
             ans.push_back(search);
         }
     }
 
+    printHeader();
     for(auto & i : ans){
-        cout <<"Date: " << i.date << " Company: " << i.stockName << " Adj. Close: " <<
-             i.adjClose << " Volume: " << i.totalVolume<< endl;
+        printTable(i);
     }
 
 
+}
+
+void MaxHeap::topN(int n) {
+
+    MaxHeap copy;
+    copy.heap = heap;
+    vector<Stock> ans;
+
+    for(int i = 0; i < n; i++){
+        Stock top = copy.extractMax();
+        ans.push_back(top);
+    }
+
+    printHeader();
+    for(auto & i : ans){
+        printTable(i);
+    }
+
+}
+
+void MaxHeap::printHeader() {
+    cout << left << setw(15) << "Stock Name"
+         << setw(15) << "Date"
+         << setw(15) << "Adj. Close"
+         << setw(15) << "Volume" << endl;
+    cout << string(60, '-') << endl;
+}
+
+void MaxHeap::printTable(const Stock& stonk) {
+    cout << left << setw(15) << stonk.stockName
+         << setw(15) << stonk.date
+         << setw(15) << fixed << setprecision(2) << stonk.adjClose
+         << setw(15) << stonk.totalVolume << endl;
+
+    cout << string(60, '-') << endl;
 }
