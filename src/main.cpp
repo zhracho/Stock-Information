@@ -43,6 +43,7 @@ int main() {
 
         MaxHeap stockHeap;
         HashTable stockTable = HashTable(500);
+        HashTable stockTableDates = HashTable(20);
 
         std::string filename = "proj3_sp500_stocks.csv"; // Replace with your CSV file name
         std::ifstream file(filename);
@@ -60,7 +61,8 @@ int main() {
             }
 
             stockHeap.insert(Stock(row[0], row[1], stoi(row[2]), stod(row[3])));
-            stockTable.insert(Stock(row[0], row[1], stoi(row[2]), stod(row[3])));
+            stockTable.insert(Stock(row[0], row[1], stoi(row[2]), stod(row[3])), false);
+            stockTableDates.insert(Stock(row[0], row[1], stoi(row[2]), stod(row[3])), true);
 
         }
 
@@ -155,11 +157,13 @@ int main() {
             }
         }else if(userInput == 5){
             dataStructure = userChoice();
+            cout << "Please Enter the Date in m/d/yyyy Format: ";
+            string date;
+            cin >> date;
             if(dataStructure == 1){
-                cout << "Please Enter the Date in m/d/yyyy Format: ";
-                string date;
-                cin >> date;
                 stockHeap.searchDate(date);
+            }else{
+                stockTableDates.dateRange(date);
             }
         }
 

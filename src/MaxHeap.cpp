@@ -114,29 +114,6 @@ void MaxHeap::printMax() {
 
 }
 
-int MaxHeap::getYear(const string& dateParse) {
-    int month = dateParse.find('/');
-    int day = dateParse.find('/', month + 1);
-
-    return stoi(dateParse.substr(day + 1));
-
-}
-
-int MaxHeap::getMonth(const string& dateParse) {
-    //https://cplusplus.com/reference/string/string/find/
-    int month = dateParse.find('/');
-    month = stoi(dateParse.substr(0, month));
-    return month;
-}
-
-int MaxHeap::getDate(const string& dateParse) {
-    //https://cplusplus.com/reference/string/string/find/
-    int month = dateParse.find('/');
-    int date = dateParse.find('/', month + 1);
-
-    return stoi(dateParse.substr(month + 1, date - 1));
-}
-
 void MaxHeap::searchDate(const string& startDate) {
 
     MaxHeap copy;
@@ -146,9 +123,9 @@ void MaxHeap::searchDate(const string& startDate) {
     tm date1 = {};
 
 
-    int startDay = getDate(startDate);
-    int startMonth = getMonth(startDate);
-    int startYear = getYear(startDate);
+    int startDay = Stock::getDate(startDate);
+    int startMonth = Stock::getMonth(startDate);
+    int startYear = Stock::getYear(startDate);
 
     date1.tm_year = startYear - 1900;
     date1.tm_mon = startMonth- 1;
@@ -162,9 +139,9 @@ void MaxHeap::searchDate(const string& startDate) {
         Stock search = copy.extractMax();
         tm date2 = {};
 
-        int stockDate = getDate(search.date);
-        int stockYear = getYear(search.date) - 1900;
-        int stockMonth = getMonth(search.date) - 1;
+        int stockDate = Stock::getDate(search.date);
+        int stockYear = Stock::getYear(search.date) - 1900;
+        int stockMonth = Stock::getMonth(search.date) - 1;
 
         date2.tm_year = stockYear;
         date2.tm_mon = stockMonth;

@@ -11,8 +11,9 @@ class HashTable {
     int elements = 0;
     vector<vector<pair<string, vector<Stock>>>> table;
     vector<string> companies;
+    vector<string> dates;
 public:
-    void insert(Stock stonk);
+    void insert(Stock stonk, bool isDate);
     int hashFunc(const string& stockName);
     HashTable(int buckets);
     void rehash();
@@ -21,6 +22,8 @@ public:
     vector<Stock> topStocks(int n);
     void printHeader();
     void printTable(const Stock& stonk);
+    vector<Stock> dateRange(const string& date);
+
 
 };
 

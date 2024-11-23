@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <iostream>
 #include <iomanip>
+#include "Stock.h"
 using namespace std;
 int HashTable::hashFunc(const string& stockName) {
     int sum = 0;
@@ -11,29 +12,55 @@ int HashTable::hashFunc(const string& stockName) {
     return sum;
 }
 
-void HashTable::insert(Stock stonk) {
+void HashTable::insert(Stock stonk, bool isDate = false) {
 
-    int reduceInd = hashFunc(stonk.stockName) % bucketSize;
-    //If the entry exists add it to the big vector that we have
-    vector<pair<string, vector<Stock>>> temp = table[reduceInd];
+    if(isDate){
+        int reduceInd = hashFunc(stonk.date) % bucketSize;
+        //If the entry exists add it to the big vector that we have
+        vector<pair<string, vector<Stock>>> temp = table[reduceInd];
 
-    for(int i = 0; i < temp.size(); i++){
-        if(temp[i].first == stonk.stockName){
-            table[reduceInd][i].second.push_back(stonk);
-            return;
+        for(int i = 0; i < temp.size(); i++){
+            if(temp[i].first == stonk.date){
+                table[reduceInd][i].second.push_back(stonk);
+                return;
+            }
         }
-    }
 
-    vector<Stock> insert = {stonk};
+        vector<Stock> insert = {stonk};
 
-    table[reduceInd].push_back(make_pair(stonk.stockName, insert));
-    companies.push_back(stonk.stockName);
-    elements++;
-    double loadFactor = (double)elements / bucketSize;
+        table[reduceInd].push_back(make_pair(stonk.date, insert));
+        dates.push_back(stonk.date);
+        elements++;
+        double loadFactor = (double)elements / bucketSize;
+
+        if(loadFactor >= threshold){
+            rehash();
+        }
+
+    }else{
+        int reduceInd = hashFunc(stonk.stockName) % bucketSize;
+        //If the entry exists add it to the big vector that we have
+        vector<pair<string, vector<Stock>>> temp = table[reduceInd];
+
+        for(int i = 0; i < temp.size(); i++){
+            if(temp[i].first == stonk.stockName){
+                table[reduceInd][i].second.push_back(stonk);
+                return;
+            }
+        }
+
+        vector<Stock> insert = {stonk};
+
+        table[reduceInd].push_back(make_pair(stonk.stockName, insert));
+        companies.push_back(stonk.stockName);
+        elements++;
+        double loadFactor = (double)elements / bucketSize;
+
+        if(loadFactor >= threshold){
+            rehash();
+        }
 
 
-    if(loadFactor >= threshold){
-        rehash();
     }
 
 
@@ -116,6 +143,29 @@ Stock HashTable::maxStock() {
 
 vector<Stock> HashTable::topStocks(int n) {
 
+    vector<Stock> maxStocks;
+    vector<Stock> top;
+    for(int i = 0; i < companies.size(); i++) {
+        int reducedIndex = hashFunc(companies[i]) % bucketSize;
+        for (int j = 0; j < table[reducedIndex].size(); j++) {
+            maxStocks.insert(maxStocks.end(), table[reducedIndex][j].second.begin(), table[reducedIndex][j].second.end());
+        }
+    }
+
+    std::sort(maxStocks.begin(), maxStocks.end(),
+              [] (Stock stock1, Stock stock2) {return stock1.adjClose > stock2.adjClose;});
+
+    for(int i = 0; i < n; i++){
+        top.push_back(maxStocks[i]);
+    }
+
+    printHeader();
+    for(int i = 0; i < top.size(); i++){
+        printTable(top[i]);
+    }
+
+    return top;
+
 }
 void HashTable::printHeader() {
     cout << left << setw(15) << "Stock Name"
@@ -132,5 +182,51 @@ void HashTable::printTable(const Stock& stonk) {
          << setw(15) << stonk.totalVolume << endl;
 
     cout << string(60, '-') << endl;
+
+}
+
+vector<Stock> HashTable::dateRange(const string& date) {
+    vector<Stock> dateStocks;
+    tm date1 = {};
+
+
+    int startDay = Stock::getDate(date);
+    int startMonth = Stock::getMonth(date);
+    int startYear = Stock::getYear(date);
+
+    date1.tm_year = startYear - 1900;
+    date1.tm_mon = startMonth- 1;
+    date1.tm_mday = startDay;
+
+    time_t timestamp1 = mktime(&date1);
+    time_t timestamp2;
+
+    for(int i = 0; i < dates.size(); i++) {
+        tm date2 = {};
+
+        int reducedIndex = hashFunc(dates[i]) % bucketSize;
+        for (int j = 0; j < table[reducedIndex].size(); j++) {
+            int stockDate = Stock::getDate(table[reducedIndex][j].first);
+            int stockYear = Stock::getYear(table[reducedIndex][j].first);
+            int stockMonth = Stock::getMonth(table[reducedIndex][j].first);
+
+            date2.tm_year = stockYear- 1900;
+            date2.tm_mon = stockMonth -1;
+            date2.tm_mday = stockDate;
+
+            timestamp2 = mktime(&date2);
+            if(timestamp1 < timestamp2){
+                dateStocks.insert(dateStocks.end(), table[reducedIndex][j].second.begin(), table[reducedIndex][j].second.end());
+            }
+        }
+
+    }
+
+    printHeader();
+    for(int i = 0; i < dateStocks.size(); i++){
+        printTable(dateStocks[i]);
+    }
+
+    return dateStocks;
 
 }

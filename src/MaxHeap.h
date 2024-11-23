@@ -17,9 +17,6 @@ public:
     Stock extractMax();
     void searchCompany(int x, const string& stockName);
     void searchDate(const string& startDate);
-    int getYear(const string& dateParse);
-    int getMonth(const string& dateParse);
-    int getDate(const string& dateParse);
     void printHeader();
     void printTable(const Stock& stonk);
 };
