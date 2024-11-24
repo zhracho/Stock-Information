@@ -5,9 +5,7 @@
 using namespace std;
 class MaxHeap {
     vector<Stock> heap;
-private:
     void heapifyDown(vector<Stock>& vec, int index);
-
 public:
     void insert(Stock stonk);
     void topN(int n);
