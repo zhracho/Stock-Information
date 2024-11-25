@@ -15,7 +15,7 @@ void MaxHeap::insert(Stock stonk) {
 
     //Essentially acts as our heapifyUp, swapping elements until each parents is greater than its children
     //and the top elements is the maximum value in the entire dataset
-    while(parent > 0 && (heap[parent].adjClose < heap[child].adjClose)){
+    while(parent >= 0 && (heap[parent].adjClose < heap[child].adjClose)){
         std::swap(heap[parent], heap[child]);
         child = parent;
         parent = (child - 1)/2;
@@ -77,7 +77,7 @@ Stock MaxHeap::extractMax() {
 
 }
 
-void MaxHeap::searchCompany(int x, const string& stockName) {
+void MaxHeap::searchCompany(int x, const string& stockName, bool all = false) {
 
     //Create a copy so we can keep extracting from without messing up our original structure
     MaxHeap copy;
@@ -93,17 +93,28 @@ void MaxHeap::searchCompany(int x, const string& stockName) {
         stockNameLower += (char)toupper(stockName[i]);
     }
 
-    //Iterates through the entire heap or until n is achieved
-    for(unsigned int i = 0; i < heap.size(); i ++){
-        //Get our current maximum stock
-        Stock search = copy.extractMax();
-        //If we are already at the count we dont continue
-        if(count == x)
-            break;
-        //If that stock is what we are looking for
-        if(search.stockName == stockNameLower){
-            ans.push_back(search);
-            count++;
+    if(!all) {
+        //Iterates through the entire heap or until n is achieved
+        for (unsigned int i = 0; i < heap.size(); i++) {
+            //Get our current maximum stock
+            Stock search = copy.extractMax();
+            //If we are already at the count we dont continue
+            if (count == x)
+                break;
+            //If that stock is what we are looking for
+            if (search.stockName == stockNameLower) {
+                ans.push_back(search);
+                count++;
+            }
+        }
+    }else{
+        for (unsigned int i = 0; i < heap.size(); i++) {
+            //Get our current maximum stock
+            Stock search = copy.extractMax();
+            //If that stock is what we are looking for
+            if (search.stockName == stockNameLower) {
+                ans.push_back(search);
+            }
         }
     }
 

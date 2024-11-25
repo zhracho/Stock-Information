@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include "Stock.h"
+#include "../src/Stock.h"
 class RedBlack {
     struct Node {
         string stockName;

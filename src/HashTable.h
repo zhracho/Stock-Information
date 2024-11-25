@@ -17,7 +17,7 @@ public:
     int hashFunc(const string& stockName);
     HashTable(int buckets);
     void rehash();
-    vector<Stock> topNByCompany(const string& stockName, int n, bool print);
+    vector<Stock> topNByCompany(const string& stockName, int n, bool print, bool sort);
     Stock maxStock();
     vector<Stock> topStocks(int n);
     void printHeader();

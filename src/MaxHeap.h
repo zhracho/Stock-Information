@@ -9,11 +9,10 @@ class MaxHeap {
 public:
     void insert(Stock stonk);
     void topN(int n);
-    void printHeap();
     Stock maxElement();
     void printMax();
     Stock extractMax();
-    void searchCompany(int x, const string& stockName);
+    void searchCompany(int x, const string& stockName, bool all);
     void searchDate(const string& startDate);
     void printHeader();
     void printTable(const Stock& stonk);
