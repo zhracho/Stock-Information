@@ -20,7 +20,6 @@ void userInterface(){
 
 }
 
-
 int userChoice(){
     //Prompts the user for input at every step of the way to test which data structure to use
     cout << "How would you like to store the data?" << endl;
@@ -247,11 +246,11 @@ int main() {
             }else{
                 cout << "Wrong Input Please Try Again" << endl;
             }
-        }
-
         //We want to exit the program
-        if(userInput == 6){
+        }else if(userInput == 6){
             exit = true;
+        }else{
+            cout << "Invalid Input Please Try Again!" << endl;
         }
 
         cout << endl;

@@ -250,42 +250,27 @@ vector<Stock> HashTable::dateRange(const string& date) {
     printHeader();
     //Create a vector to store our information as well as creating the structure of our time
     vector<Stock> dateStocks;
-    tm date1 = {};
-
-    //Initialize it to create a date-time object
-    date1.tm_year = Stock::getYear(date)- 1900;
-    date1.tm_mon = Stock::getMonth(date)- 1;
-    date1.tm_mday = Stock::getDate(date);
 
     //Make it a time object for date comparisons
-    time_t timestamp1 = mktime(&date1);
+    time_t timestamp1 = Stock::getDateTime(date);
 
     //For each of the dates in the vector we want to see if it falls in the range
     for(int i = 0; i < dates.size(); i++) {
-
         //Navigate to the specific index
         int reducedIndex = hashFunc(dates[i]) % bucketSize;
         //Iterate through all possible options
         for (int j = 0; j < table[reducedIndex].size(); j++) {
-            tm date2 = {};
-            //Extract the date from the components
-            int stockDate = Stock::getDate(table[reducedIndex][j].first);
-            int stockYear = Stock::getYear(table[reducedIndex][j].first);
-            int stockMonth = Stock::getMonth(table[reducedIndex][j].first);
-
-            //Initialize it into our date structure for comparing
-            date2.tm_year = stockYear- 1900;
-            date2.tm_mon = stockMonth -1;
-            date2.tm_mday = stockDate;
-
-            time_t timestamp2 = mktime(&date2);
-            //If it falls within the range assign the vector to it and iterate through and print
-            if(timestamp1 < timestamp2){
-                dateStocks = table[reducedIndex][j].second;
-                for(int z = 0; z < dateStocks.size(); z++){
-                    printTable(dateStocks[z]);
+            if(table[reducedIndex][j].first == dates[i]){
+                time_t timestamp2 = Stock::getDateTime(table[reducedIndex][j].first);;
+                //If it falls within the range assign the vector to it and iterate through and print
+                if(timestamp1 < timestamp2){
+                    dateStocks = table[reducedIndex][j].second;
+                    for(int z = 0; z < dateStocks.size(); z++){
+                        printTable(dateStocks[z]);
+                    }
                 }
             }
+
         }
 
     }

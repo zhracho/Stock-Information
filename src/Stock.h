@@ -13,6 +13,7 @@ public:
     static int getYear(const string& dateParse);
     static int getMonth(const string& dateParse);
     static int getDate(const string& dateParse);
+    static time_t getDateTime(const string& dateParse);
 
 };
 

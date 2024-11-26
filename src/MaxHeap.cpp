@@ -3,7 +3,8 @@
 #include <iomanip>
 #include <ctime>
 using namespace std;
-
+//The vector documentation page below was extremely helpful for building an optimized workflow
+//https://cplusplus.com/reference/vector/vector/
 void MaxHeap::insert(Stock stonk) {
 
     //Push the stock to the end of the heap
@@ -119,9 +120,14 @@ void MaxHeap::searchCompany(int x, const string& stockName, bool all = false) {
     }
 
     //Print the final output of stocks
-    printHeader();
-    for(auto & i : ans){
-        printTable(i);
+    if(ans.empty()){
+        cout << endl;
+        cout << "No Companies Found for the Given Search" << endl;
+    }else{
+        printHeader();
+        for(auto & i : ans){
+            printTable(i);
+        }
     }
 
 }
@@ -141,40 +147,15 @@ void MaxHeap::searchDate(const string& startDate) {
     copy.heap = heap;
     vector<Stock> ans;
 
-    //Initialize our date structure
-    tm date1 = {};
-
-    //Breaks apart the current date into separate parts
-    int startDay = Stock::getDate(startDate);
-    int startMonth = Stock::getMonth(startDate);
-    int startYear = Stock::getYear(startDate);
-
-    //Pass individual parts into our date structure for later comparisons
-    date1.tm_year = startYear - 1900;
-    date1.tm_mon = startMonth- 1;
-    date1.tm_mday = startDay;
-
     //Convert to a timestamp
-    time_t timestamp1 = mktime(&date1);
-    time_t timestamp2;
+    time_t timestamp1 = Stock::getDateTime(startDate);
 
     for(unsigned int i = 0; i < heap.size(); i ++){
         //Get the current maximum element
         Stock search = copy.extractMax();
-        tm date2 = {};
-
-        //Break apart the current stocks date attribute
-        int stockDate = Stock::getDate(search.date);
-        int stockYear = Stock::getYear(search.date) - 1900;
-        int stockMonth = Stock::getMonth(search.date) - 1;
-
-        //Add the individual date components to the date structure
-        date2.tm_year = stockYear;
-        date2.tm_mon = stockMonth;
-        date2.tm_mday = stockDate;
 
         //Convert to timestamp
-        timestamp2 = mktime(&date2);
+        time_t timestamp2 = Stock::getDateTime(search.date);
 
         //If the date comes after what we initialized push it back
         if(timestamp1 < timestamp2){
@@ -182,11 +163,15 @@ void MaxHeap::searchDate(const string& startDate) {
         }
     }
 
-    printHeader();
-    for(auto & i : ans){
-        printTable(i);
+    if(ans.empty()){
+        cout << endl;
+        cout << "No Dates Found for the Given Search" << endl;
+    }else {
+        printHeader();
+        for (auto &i: ans) {
+            printTable(i);
+        }
     }
-
 
 }
 

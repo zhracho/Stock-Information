@@ -1,5 +1,6 @@
 #include "Stock.h"
 #include <string>
+#include <ctime>
 using namespace std;
 
 //Initializing the constructor
@@ -35,4 +36,20 @@ int Stock::getDate(const string &dateParse) {
     int date = dateParse.find('/', month + 1);
     //Extract the date given the previous positions
     return stoi(dateParse.substr(month + 1, date - 1));
+}
+
+time_t Stock::getDateTime(const string &dateParse) {
+    tm date2 = {};
+    //Extract the date from the components
+    int stockDate = Stock::getDate(dateParse);
+    int stockYear = Stock::getYear(dateParse);
+    int stockMonth = Stock::getMonth(dateParse);
+
+    //Initialize it into our date structure for comparing
+    date2.tm_year = stockYear - 1900;
+    date2.tm_mon = stockMonth - 1;
+    date2.tm_mday = stockDate;
+
+    time_t timestamp2 = mktime(&date2);
+    return timestamp2;
 }
