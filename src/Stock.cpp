@@ -39,6 +39,7 @@ int Stock::getDate(const string &dateParse) {
 }
 
 time_t Stock::getDateTime(const string &dateParse) {
+    //https://cplusplus.com/reference/ctime/mktime/
     tm date2 = {};
     //Extract the date from the components
     int stockDate = Stock::getDate(dateParse);

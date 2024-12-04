@@ -6,6 +6,7 @@
 #include "Stock.h"
 using namespace std;
 
+//Used slides 36-91 in Module 7 for inspiration on hash maps and how to implement them from scratch
 int HashTable::hashFunc(const string& stockName) {
     int sum = 0;
     //Iterate through all of the characters and sum the ascii values
@@ -214,7 +215,6 @@ vector<Stock> HashTable::topStocks(int n) {
                           [] (Stock stock1, Stock stock2) {return stock1.adjClose == stock2.adjClose;});
 
     // Remove duplicates elements
-
     maxStocks.erase(it, maxStocks.end());
     //Print the top n elements as specified by the user
     printHeader();

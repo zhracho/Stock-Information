@@ -6,7 +6,7 @@ using namespace std;
 //The vector documentation page below was extremely helpful for building an optimized workflow
 //https://cplusplus.com/reference/vector/vector/
 void MaxHeap::insert(Stock stonk) {
-
+    //Slide 28 of the Heaps Lecture Slides were helpful during this implementation
     //Push the stock to the end of the heap
     heap.push_back(stonk);
 
@@ -31,6 +31,7 @@ Stock MaxHeap::maxElement() {
 
 void MaxHeap::heapifyDown(vector<Stock>& vec, int index) {
     //Code for this statement was taking from Programming Quiz 6 on Edugator
+    //Slightly modified as I noticed some bugs when implementing on a larger scale
 
     //Get the left and right child
     int large = index;
